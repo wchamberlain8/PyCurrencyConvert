@@ -1,19 +1,64 @@
 import requests
 import time
 import os
+from CurrencyCodes import codeDictionary
 
 #'https://v6.exchangerate-api.com/v6/80c772aad2e7ff37519f5ec5/latest/CURRENCY_CODE' #API key
 
+ITEMS_PER_PAGE = 20
+
+def displayPage(codeDictionary, pageNum):
+
+    startIndex = (pageNum - 1) * ITEMS_PER_PAGE
+    endIndex = startIndex + ITEMS_PER_PAGE
+
+    sortedCodeDictionary = dict(sorted(codeDictionary.items(), key=lambda item: item[1]))
+    items = list(sortedCodeDictionary.items())[startIndex:endIndex]
+
+    print(f"Currency Code Guide - Page {pageNum}/{(len(codeDictionary) + ITEMS_PER_PAGE - 1) // ITEMS_PER_PAGE}")
+    print("----------------------------------------")
+    
+    for code, description in items:
+        print(f"{code}: {description}")
+    
+    print("----------------------------------------")
+    print(f"Showing {startIndex + 1} to {min(endIndex, len(codeDictionary))} of {len(codeDictionary)} currencies")
+    print("Enter 'n' for next page, 'p' for previous page, 'q' to quit.")
+
+
+def currencyCodePages():
+    pageNum = 1
+    total_pages = (len(codeDictionary) + ITEMS_PER_PAGE - 1) // ITEMS_PER_PAGE
+
+    while True:
+        displayPage(codeDictionary, pageNum)
+        userInput = input("Enter your choice: ").lower()
+
+        if userInput == 'n' and pageNum < total_pages:
+            os.system("cls")
+            pageNum += 1
+        elif userInput == 'p' and pageNum > 1:
+            os.system("cls")
+            pageNum -= 1
+        elif userInput == 'q':
+            os.system("cls")
+            break
+        else:
+            os.system("cls")
+            print("\n*** Invalid input. Enter 'n' (next), 'p' (previous), or 'q' (quit) ***\n")
+
+
 def errorCodes(code):
     if code == 'unsupported-code':
-        print("*** ERROR: The base code entered in not available in the API ***")
-        print("*** Refer to the currency code in the main menu for more information ***")
+        print("\n*** ERROR: The base code entered in not available in the API ***")
+        print("*** Refer to the currency code in the main menu for more information ***\n")
     if code == 'malformed-request':
-        print("*** ERROR: Request did not follow the valid API structure ***")
+        print("\n*** ERROR: Request did not follow the valid API structure ***\n")
     elif code == 'invalid-key':
-        print("*** ERROR: The API key is invalid ***")
+        print("\n*** ERROR: The API key is invalid ***\n")
     elif code == 'quota-reached':
-        print("*** ERROR: Account has reached the number of requests allowed by your plan ***")
+        print("\n*** ERROR: Account has reached the number of requests allowed by your plan ***\n")
+
 
 def getConversionRate(baseCurrency, targetCurrency):
     url = f'https://v6.exchangerate-api.com/v6/80c772aad2e7ff37519f5ec5/latest/{baseCurrency}' #API key
@@ -103,7 +148,8 @@ def menuInput():
             customConversion()
             return
         elif userInput == '2':
-            # function call
+            os.system('cls')
+            currencyCodePages()
             return
         elif userInput == '3':
             os.system('cls')
