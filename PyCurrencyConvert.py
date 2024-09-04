@@ -26,6 +26,7 @@ def displayPage(codeDictionary, pageNum):
     print("Enter 'n' for next page, 'p' for previous page, 'q' to quit.")
 
 
+
 def currencyCodePages():
     pageNum = 1
     total_pages = (len(codeDictionary) + ITEMS_PER_PAGE - 1) // ITEMS_PER_PAGE
@@ -48,6 +49,7 @@ def currencyCodePages():
             print("\n*** Invalid input. Enter 'n' (next), 'p' (previous), or 'q' (quit) ***\n")
 
 
+
 def errorCodes(code):
     if code == 'unsupported-code':
         print("\n*** ERROR: The base code entered in not available in the API ***")
@@ -58,6 +60,7 @@ def errorCodes(code):
         print("\n*** ERROR: The API key is invalid ***\n")
     elif code == 'quota-reached':
         print("\n*** ERROR: Account has reached the number of requests allowed by your plan ***\n")
+
 
 
 def getConversionRate(baseCurrency, targetCurrency):
@@ -78,13 +81,16 @@ def getConversionRate(baseCurrency, targetCurrency):
             return None
 
 
+
 def printConversion(conversionRate, baseCurrency, targetCurrency, value):
     newValue = round(value * conversionRate, 2)
     message = f"{value} {baseCurrency} is equivalent to {newValue} {targetCurrency}"
     borderLength = len(message) + 4
+    print("\n")
     print("-" * borderLength)
     print(f"* {message} *")
     print("-" * borderLength)
+
 
 
 def customConversion():
@@ -101,12 +107,42 @@ def customConversion():
     if conversionRate:
         printConversion(conversionRate, baseCurrency, targetCurrency, value)
 
-    # TODO: Want to add these features, but don't want it to get messy
-    # print("\n1) Convert a different amount")
-    # print(f"2) Change base currency ({baseCurrency})")
-    # print(f"3) Change target currency ({targetCurrency})")
+    while True:
+        print("\n1) Convert a different amount")
+        print(f"2) Change base currency (currently {baseCurrency})")
+        print(f"3) Change target currency (currently {targetCurrency})")
+        print("4) Exit to main menu")
 
-    # userInput = input("Enter your selection [1-3]: ")
+        userInput = input("Enter your selection [1-4]: ")
+
+        if userInput == "1":
+            value = float(input("\nEnter the amount of money: "))
+            conversionRate = getConversionRate(baseCurrency, targetCurrency)
+            
+            if conversionRate:
+                printConversion(conversionRate, baseCurrency, targetCurrency, value)
+
+        elif userInput == "2":
+            baseCurrency = input("\nEnter base currency (e.g. GBP, EUR): ").upper()
+            conversionRate = getConversionRate(baseCurrency, targetCurrency)
+
+            if conversionRate:
+                printConversion(conversionRate, baseCurrency, targetCurrency, value)
+
+        elif userInput == "3":
+            targetCurrency = input("\nEnter desired currency (e.g. USD, JPY): ").upper()
+            conversionRate = getConversionRate(baseCurrency, targetCurrency)
+
+            if conversionRate:
+                printConversion(conversionRate, baseCurrency, targetCurrency, value)
+
+        elif userInput == "4":
+            os.system("cls")
+            return
+        else:
+            print("Invalid choice, try again")
+
+
 
 def quickConversion(baseCurrency):
     print("--------------------------------------------------------")
@@ -120,7 +156,41 @@ def quickConversion(baseCurrency):
     if conversionRate:
         printConversion(conversionRate, baseCurrency, targetCurrency, value)
 
-    # print("\n1) Convert a different amount")
+    while True:
+        print("\n1) Convert a different amount")
+        print(f"2) Change target currency (currently {targetCurrency})")
+        print("3) Exit to main menu")
+
+        userInput = input("Enter your selection [1-3]: ")
+
+        if userInput == "1":
+            value = float(input("\nEnter the amount of money: "))
+            conversionRate = getConversionRate(baseCurrency, targetCurrency)
+            
+            if conversionRate:
+                printConversion(conversionRate, baseCurrency, targetCurrency, value)
+
+        elif userInput == "2":
+            targetCurrency = input("\nEnter desired currency (e.g. USD, JPY): ").upper()
+            conversionRate = getConversionRate(baseCurrency, targetCurrency)
+
+            if conversionRate:
+                printConversion(conversionRate, baseCurrency, targetCurrency, value)
+
+        elif userInput == "3":
+            os.system("cls")
+            return
+        else:
+            print("Invalid choice, try again")
+
+
+
+def helpMenu():
+    print("\nThis program uses ExchangeRate-API for its currency codes, descriptions and exchange rates")
+    print("For more information, visit their website: ")
+    print("https://www.exchangerate-api.com/")
+    print("This is a project made by William Chamberlain (wchamberlain8 on GitHub)")
+    print("\n")
 
 
 
@@ -164,7 +234,8 @@ def menuInput():
             quickConversion("EUR")
             return
         elif userInput == '6':
-            # function call
+            os.system('cls')
+            helpMenu()
             return
         elif userInput == '7':
             print("Exiting...")
