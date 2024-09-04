@@ -15,8 +15,8 @@ def errorCodes(code):
     elif code == 'quota-reached':
         print("*** ERROR: Account has reached the number of requests allowed by your plan ***")
 
-def getConversionRate(userCurrency, targetCurrency):
-    url = f'https://v6.exchangerate-api.com/v6/80c772aad2e7ff37519f5ec5/latest/{userCurrency}' #API key
+def getConversionRate(baseCurrency, targetCurrency):
+    url = f'https://v6.exchangerate-api.com/v6/80c772aad2e7ff37519f5ec5/latest/{baseCurrency}' #API key
 
     response = requests.get(url) #http get request
     data = response.json()
@@ -33,31 +33,49 @@ def getConversionRate(userCurrency, targetCurrency):
             return None
 
 
+def printConversion(conversionRate, baseCurrency, targetCurrency, value):
+    newValue = round(value * conversionRate, 2)
+    message = f"{value} {baseCurrency} is equivalent to {newValue} {targetCurrency}"
+    borderLength = len(message) + 4
+    print("-" * borderLength)
+    print(f"* {message} *")
+    print("-" * borderLength)
+
+
 def customConversion():
 
     print("--------------------------------------------------------")
     print("|                  Custom Conversion                   |")
     print("--------------------------------------------------------")
-    userCurrency = input("Enter currency you wish to convert (e.g. GBP, EUR): ").upper()
+    baseCurrency = input("Enter currency you wish to convert (e.g. GBP, EUR): ").upper()
     value = float(input("Enter the amount of money: "))
     targetCurrency = input("Enter desired currency (e.g. USD, JPY): ").upper()
 
-    conversionRate = getConversionRate(userCurrency, targetCurrency)
+    conversionRate = getConversionRate(baseCurrency, targetCurrency)
 
     if conversionRate:
-        newValue = round(value * conversionRate, 2)
-        message = f"{value} {userCurrency} is equivalent to {newValue} {targetCurrency}"
-        borderLength = len(message) + 4
-        print("-" * borderLength)
-        print(f"| {message} |")
-        print("-" * borderLength)
+        printConversion(conversionRate, baseCurrency, targetCurrency, value)
 
-    # TODO: Want to add these features, but don't want it to get messy, may need some additional functions (or move printing new value to a function to keep original settings etc.)
+    # TODO: Want to add these features, but don't want it to get messy
     # print("\n1) Convert a different amount")
-    # print(f"2) Change base currency ({userCurrency})")
+    # print(f"2) Change base currency ({baseCurrency})")
     # print(f"3) Change target currency ({targetCurrency})")
 
     # userInput = input("Enter your selection [1-3]: ")
+
+def quickConversion(baseCurrency):
+    print("--------------------------------------------------------")
+    print(f"|                Quick Conversion ({baseCurrency})                |")
+    print("--------------------------------------------------------")
+    value = float(input("Enter the amount of money: "))
+    targetCurrency = input("Enter desired currency (e.g. USD, JPY): ").upper()
+
+    conversionRate = getConversionRate(baseCurrency, targetCurrency)
+
+    if conversionRate:
+        printConversion(conversionRate, baseCurrency, targetCurrency, value)
+
+    # print("\n1) Convert a different amount")
 
 
 
@@ -88,13 +106,16 @@ def menuInput():
             # function call
             return
         elif userInput == '3':
-            # function call
+            os.system('cls')
+            quickConversion("GBP")
             return
         elif userInput == '4':
-            # function call
+            os.system('cls')
+            quickConversion("USD")
             return
         elif userInput == '5':
-            # function call
+            os.system('cls')
+            quickConversion("EUR")
             return
         elif userInput == '6':
             # function call
