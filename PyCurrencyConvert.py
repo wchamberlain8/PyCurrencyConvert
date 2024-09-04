@@ -4,6 +4,16 @@ import os
 
 #'https://v6.exchangerate-api.com/v6/80c772aad2e7ff37519f5ec5/latest/CURRENCY_CODE' #API key
 
+def errorCodes(code):
+    if code == 'unsupported-code':
+        print("*** ERROR: The base code entered in not available in the API ***")
+        print("*** Refer to the currency code in the main menu for more information ***")
+    if code == 'malformed-request':
+        print("*** ERROR: Request did not follow the valid API structure ***")
+    elif code == 'invalid-key':
+        print("*** ERROR: The API key is invalid ***")
+    elif code == 'quota-reached':
+        print("*** ERROR: Account has reached the number of requests allowed by your plan ***")
 
 def getConversionRate(userCurrency, targetCurrency):
     url = f'https://v6.exchangerate-api.com/v6/80c772aad2e7ff37519f5ec5/latest/{userCurrency}' #API key
@@ -11,26 +21,43 @@ def getConversionRate(userCurrency, targetCurrency):
     response = requests.get(url) #http get request
     data = response.json()
 
-    if targetCurrency in data['conversion_rates']:
-        return data['conversion_rates'][targetCurrency]
-    else:
-        print(f"Error: {targetCurrency} is not available in the API")
+    if data.get('result') == 'error':
+        errorCode = data.get('error-type')
+        errorCodes(errorCode)
         return None
+    else:     
+        if targetCurrency in data['conversion_rates']:
+            return data['conversion_rates'][targetCurrency]
+        else:
+            print(f"*** ERROR: {targetCurrency} is not available in the API ***")
+            return None
 
 
 def customConversion():
 
-    userCurrency = input("Enter currency you wish to convert: ").upper
+    print("--------------------------------------------------------")
+    print("|                  Custom Conversion                   |")
+    print("--------------------------------------------------------")
+    userCurrency = input("Enter currency you wish to convert (e.g. GBP, EUR): ").upper()
     value = float(input("Enter the amount of money: "))
-    targetCurrency = input("Enter desired currency: ").upper
+    targetCurrency = input("Enter desired currency (e.g. USD, JPY): ").upper()
 
     conversionRate = getConversionRate(userCurrency, targetCurrency)
 
     if conversionRate:
-        newValue = value * conversionRate
-        print(f"{value} {userCurrency} is equivalent to {newValue} {targetCurrency}")
+        newValue = round(value * conversionRate, 2)
+        message = f"{value} {userCurrency} is equivalent to {newValue} {targetCurrency}"
+        borderLength = len(message) + 4
+        print("-" * borderLength)
+        print(f"| {message} |")
+        print("-" * borderLength)
 
-    
+    # TODO: Want to add these features, but don't want it to get messy, may need some additional functions (or move printing new value to a function to keep original settings etc.)
+    # print("\n1) Convert a different amount")
+    # print(f"2) Change base currency ({userCurrency})")
+    # print(f"3) Change target currency ({targetCurrency})")
+
+    # userInput = input("Enter your selection [1-3]: ")
 
 
 
@@ -79,5 +106,6 @@ def menuInput():
         else:
             print("Invalid choice, try again")
 
-menu()
-menuInput()
+while True:
+    menu()
+    menuInput()
