@@ -99,8 +99,17 @@ def customConversion():
     print("|                  Custom Conversion                   |")
     print("--------------------------------------------------------")
     baseCurrency = input("Enter currency you wish to convert (e.g. GBP, EUR): ").upper()
-    value = float(input("Enter the amount of money: "))
+
+    while True:
+        try:
+            value = float(input("Enter the amount of money: "))
+            break
+        except ValueError:
+            print("*** ERROR: Invalid input. Please enter a valid numerical value. ***")
+
     targetCurrency = input("Enter desired currency (e.g. USD, JPY): ").upper()
+
+
 
     conversionRate = getConversionRate(baseCurrency, targetCurrency)
 
@@ -116,7 +125,13 @@ def customConversion():
         userInput = input("Enter your selection [1-4]: ")
 
         if userInput == "1":
-            value = float(input("\nEnter the amount of money: "))
+            while True:
+                try:
+                    value = float(input("Enter the amount of money: "))
+                    break
+                except ValueError:
+                    print("*** ERROR: Invalid input. Please enter a valid numerical value. ***")
+
             conversionRate = getConversionRate(baseCurrency, targetCurrency)
             
             if conversionRate:
@@ -148,7 +163,14 @@ def quickConversion(baseCurrency):
     print("--------------------------------------------------------")
     print(f"|                Quick Conversion ({baseCurrency})                |")
     print("--------------------------------------------------------")
-    value = float(input("Enter the amount of money: "))
+
+    while True:
+        try:
+            value = float(input("Enter the amount of money: "))
+            break
+        except ValueError:
+            print("*** ERROR: Invalid input. Please enter a valid numerical value. ***")
+
     targetCurrency = input("Enter desired currency (e.g. USD, JPY): ").upper()
 
     conversionRate = getConversionRate(baseCurrency, targetCurrency)
@@ -164,7 +186,13 @@ def quickConversion(baseCurrency):
         userInput = input("Enter your selection [1-3]: ")
 
         if userInput == "1":
-            value = float(input("\nEnter the amount of money: "))
+            while True:
+                try:
+                    value = float(input("Enter the amount of money: "))
+                    break
+                except ValueError:
+                    print("*** ERROR: Invalid input. Please enter a valid numerical value. ***")
+                    
             conversionRate = getConversionRate(baseCurrency, targetCurrency)
             
             if conversionRate:
@@ -186,10 +214,18 @@ def quickConversion(baseCurrency):
 
 
 def helpMenu():
-    print("\nThis program uses ExchangeRate-API for its currency codes, descriptions and exchange rates")
+    print("\n-------------------------------------------------------")
+    print(f"|                      Help Menu                      |")
+    print("-------------------------------------------------------")
+    print("This program uses ExchangeRate-API for its currency codes, descriptions and exchange rates")
     print("For more information, visit their website: ")
     print("https://www.exchangerate-api.com/")
     print("This is a project made by William Chamberlain (wchamberlain8 on GitHub)")
+    print("---------------------------------------------------------")
+    print("To use the program, follow the instructions and enter in valid selections:")
+    print("To navigate menus, use numbers [1-?] depending on the menu")
+    print("To convert currencies, enter in a valid currency code and an amount of money to convert")
+    print("Valid country codes are available from the main menu, or on the ExchangeRate-API website")
     print("\n")
 
 
@@ -208,6 +244,8 @@ def menu():
     print("| 6) Help menu                        |")
     print("| 7) Exit                             |")
     print ("---------------------------------------")
+
+
 
 def menuInput():
     while True:
